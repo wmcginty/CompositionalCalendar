@@ -7,23 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B4DD807527A7362F00AF6268 /* WeekdaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DD807427A7362F00AF6268 /* WeekdaysView.swift */; };
 		B4F53B4527A701B7009099FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4427A701B7009099FC /* AppDelegate.swift */; };
 		B4F53B4727A701B7009099FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4627A701B7009099FC /* SceneDelegate.swift */; };
-		B4F53B4927A701B7009099FC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4827A701B7009099FC /* ViewController.swift */; };
+		B4F53B4927A701B7009099FC /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4827A701B7009099FC /* CalendarViewController.swift */; };
 		B4F53B4C27A701B7009099FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4F53B4A27A701B7009099FC /* Main.storyboard */; };
 		B4F53B4E27A701B8009099FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4F53B4D27A701B8009099FC /* Assets.xcassets */; };
 		B4F53B5127A701B8009099FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4F53B4F27A701B8009099FC /* LaunchScreen.storyboard */; };
+		B4F53B5927A705A6009099FC /* CalendarTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B5827A705A6009099FC /* CalendarTypes.swift */; };
+		B4F53B5B27A70A39009099FC /* ContentProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B5A27A70A39009099FC /* ContentProviders.swift */; };
+		B4F53B5D27A71D16009099FC /* DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B5C27A71D16009099FC /* DataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B4F53B4127A701B7009099FC /* CustomCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4DD807427A7362F00AF6268 /* WeekdaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdaysView.swift; sourceTree = "<group>"; };
+		B4F53B4127A701B7009099FC /* CompositionalCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CompositionalCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F53B4427A701B7009099FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4F53B4627A701B7009099FC /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B4F53B4827A701B7009099FC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B4F53B4827A701B7009099FC /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		B4F53B4B27A701B7009099FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B4F53B4D27A701B8009099FC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B4F53B5027A701B8009099FC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B4F53B5227A701B8009099FC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4F53B5827A705A6009099FC /* CalendarTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTypes.swift; sourceTree = "<group>"; };
+		B4F53B5A27A70A39009099FC /* ContentProviders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentProviders.swift; sourceTree = "<group>"; };
+		B4F53B5C27A71D16009099FC /* DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,10 +45,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B4DD807227A735D500AF6268 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				B4F53B4827A701B7009099FC /* CalendarViewController.swift */,
+				B4F53B5A27A70A39009099FC /* ContentProviders.swift */,
+				B4F53B5C27A71D16009099FC /* DataSource.swift */,
+				B4DD807427A7362F00AF6268 /* WeekdaysView.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
+		B4DD807327A735E100AF6268 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B4F53B5827A705A6009099FC /* CalendarTypes.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		B4F53B3827A701B7009099FC = {
 			isa = PBXGroup;
 			children = (
-				B4F53B4327A701B7009099FC /* CustomCalendar */,
+				B4F53B4327A701B7009099FC /* CompositionalCalendar */,
 				B4F53B4227A701B7009099FC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,31 +75,32 @@
 		B4F53B4227A701B7009099FC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B4F53B4127A701B7009099FC /* CustomCalendar.app */,
+				B4F53B4127A701B7009099FC /* CompositionalCalendar.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B4F53B4327A701B7009099FC /* CustomCalendar */ = {
+		B4F53B4327A701B7009099FC /* CompositionalCalendar */ = {
 			isa = PBXGroup;
 			children = (
 				B4F53B4427A701B7009099FC /* AppDelegate.swift */,
 				B4F53B4627A701B7009099FC /* SceneDelegate.swift */,
-				B4F53B4827A701B7009099FC /* ViewController.swift */,
+				B4DD807227A735D500AF6268 /* Interface */,
+				B4DD807327A735E100AF6268 /* Model */,
 				B4F53B4A27A701B7009099FC /* Main.storyboard */,
 				B4F53B4D27A701B8009099FC /* Assets.xcassets */,
 				B4F53B4F27A701B8009099FC /* LaunchScreen.storyboard */,
 				B4F53B5227A701B8009099FC /* Info.plist */,
 			);
-			path = CustomCalendar;
+			path = CompositionalCalendar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B4F53B4027A701B7009099FC /* CustomCalendar */ = {
+		B4F53B4027A701B7009099FC /* CompositionalCalendar */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B4F53B5527A701B8009099FC /* Build configuration list for PBXNativeTarget "CustomCalendar" */;
+			buildConfigurationList = B4F53B5527A701B8009099FC /* Build configuration list for PBXNativeTarget "CompositionalCalendar" */;
 			buildPhases = (
 				B4F53B3D27A701B7009099FC /* Sources */,
 				B4F53B3E27A701B7009099FC /* Frameworks */,
@@ -82,9 +110,9 @@
 			);
 			dependencies = (
 			);
-			name = CustomCalendar;
+			name = CompositionalCalendar;
 			productName = CustomCalendar;
-			productReference = B4F53B4127A701B7009099FC /* CustomCalendar.app */;
+			productReference = B4F53B4127A701B7009099FC /* CompositionalCalendar.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -102,7 +130,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B4F53B3C27A701B7009099FC /* Build configuration list for PBXProject "CustomCalendar" */;
+			buildConfigurationList = B4F53B3C27A701B7009099FC /* Build configuration list for PBXProject "CompositionalCalendar" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -115,7 +143,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B4F53B4027A701B7009099FC /* CustomCalendar */,
+				B4F53B4027A701B7009099FC /* CompositionalCalendar */,
 			);
 		};
 /* End PBXProject section */
@@ -138,8 +166,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4F53B4927A701B7009099FC /* ViewController.swift in Sources */,
+				B4F53B5D27A71D16009099FC /* DataSource.swift in Sources */,
+				B4DD807527A7362F00AF6268 /* WeekdaysView.swift in Sources */,
+				B4F53B5927A705A6009099FC /* CalendarTypes.swift in Sources */,
+				B4F53B4927A701B7009099FC /* CalendarViewController.swift in Sources */,
 				B4F53B4527A701B7009099FC /* AppDelegate.swift in Sources */,
+				B4F53B5B27A70A39009099FC /* ContentProviders.swift in Sources */,
 				B4F53B4727A701B7009099FC /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,7 +321,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9W2C69WDZE;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CustomCalendar/Info.plist;
+				INFOPLIST_FILE = CompositionalCalendar/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -317,7 +349,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9W2C69WDZE;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CustomCalendar/Info.plist;
+				INFOPLIST_FILE = CompositionalCalendar/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -339,7 +371,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B4F53B3C27A701B7009099FC /* Build configuration list for PBXProject "CustomCalendar" */ = {
+		B4F53B3C27A701B7009099FC /* Build configuration list for PBXProject "CompositionalCalendar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B4F53B5327A701B8009099FC /* Debug */,
@@ -348,7 +380,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B4F53B5527A701B8009099FC /* Build configuration list for PBXNativeTarget "CustomCalendar" */ = {
+		B4F53B5527A701B8009099FC /* Build configuration list for PBXNativeTarget "CompositionalCalendar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B4F53B5627A701B8009099FC /* Debug */,
