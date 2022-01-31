@@ -45,7 +45,13 @@ extension DataSource: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate
 extension DataSource: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        let month = year.months[indexPath.section]
+        return month.day(for: indexPath.item) != nil
+    }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         let month = year.months[indexPath.section]
