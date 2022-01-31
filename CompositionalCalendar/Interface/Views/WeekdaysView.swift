@@ -14,6 +14,7 @@ class WeekdaysView: UIStackView {
             arrangedSubviews.forEach { $0.removeFromSuperview() }
             weekdaySymbols.forEach { symbol in
                 let label = UILabel(frame: .zero)
+                label.textColor = .systemBackground
                 label.text = symbol
                 label.textAlignment = .center
                 

@@ -25,7 +25,7 @@ class CalendarCollectionController: NSObject {
         
         self.contentProvider = CellContentProvider()
         self.supplementaryProvider = SupplementaryContentProvider {
-            return year.months[$0.section].firstDate.formatted(.dateTime.month(.wide))
+            return year.months[$0.section].firstDate.formatted(.dateTime.month(.wide).year())
         }
     }
     

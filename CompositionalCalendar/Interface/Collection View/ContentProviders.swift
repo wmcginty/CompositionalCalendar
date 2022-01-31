@@ -94,7 +94,7 @@ extension UICollectionView.SupplementaryRegistration {
     }
 }
 
-// MARK: -
+// MARK: - UIListContentConfiguration
 extension UIListContentConfiguration {
     
     static func `default`(for day: Day, isSelected: Bool, in cell: UICollectionViewListCell) -> UIListContentConfiguration {
@@ -113,6 +113,7 @@ extension UIListContentConfiguration {
     }
 }
 
+// MARK: - UIBackgroundConfiguration
 extension UIBackgroundConfiguration {
     
     static func `default`(forSelected selected: Bool, in cell: UICollectionViewCell) -> UIBackgroundConfiguration {
