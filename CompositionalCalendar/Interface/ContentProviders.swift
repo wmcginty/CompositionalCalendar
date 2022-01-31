@@ -63,10 +63,11 @@ extension UICollectionView.CellRegistration {
             var contentConfiguration = cell.defaultContentConfiguration()
             contentConfiguration.text = configuration.date.formatted(.dateTime.day())
             contentConfiguration.textProperties.alignment = .center
+            contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .title3)
             contentConfiguration.directionalLayoutMargins = .zero
             
             if configuration.isInWeekend {
-                contentConfiguration.textProperties.color = .lightGray
+                contentConfiguration.textProperties.color = .secondaryLabel
             }
             cell.contentConfiguration = contentConfiguration
             
@@ -74,7 +75,8 @@ extension UICollectionView.CellRegistration {
                 var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
                 
                 if cell.isSelected {
-                    backgroundConfiguration.backgroundColor = .red
+                    backgroundConfiguration.backgroundColor = .systemTeal
+                    backgroundConfiguration.backgroundInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
                     backgroundConfiguration.cornerRadius = cell.bounds.width * 0.5
                 }
                 
@@ -95,6 +97,7 @@ extension UICollectionView.SupplementaryRegistration {
         return .init(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView, _, indexPath in
             var contentConfiguration = supplementaryView.defaultContentConfiguration()
             contentConfiguration.text = section(indexPath)
+            contentConfiguration.textProperties.color = .systemTeal
 
             supplementaryView.contentConfiguration = contentConfiguration
         }
