@@ -16,24 +16,31 @@ class CalendarViewController: UIViewController {
     // MARK: - Properties
     let initialDate = Date()
     let calendar = Calendar.current
-    let year = Year(year: 2022, calendar: .current)
     
-    private lazy var dataSource: DataSource? = year.map(DataSource.init)
+    private lazy var year = Year(date: initialDate, calendar: calendar)
+    private lazy var collectionController: CalendarCollectionController? = year.map {
+        .init(year: $0, calendar: calendar, collectionView: collectionView)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        // Configure the weekday view
+        weekdaysView.weekdaySymbols = calendar.veryShortWeekdaySymbols
         
-        let context = Context(calendar: .current)
-        weekdaysView.weekdaySymbols = context.weekdaySymbols
-        
-        collectionView.dataSource = dataSource
-        collectionView.delegate = dataSource
+        // Configure the calendar collection view
         view.insertSubview(collectionView, belowSubview: weekdaysView)
+        collectionView.dataSource = collectionController
+        collectionView.delegate = collectionController
         
         if let daysInWeek = calendar.range(of: .weekday, in: .weekOfYear, for: initialDate)?.count {
             collectionView.collectionViewLayout = makeLayout(forDaysInWeek: daysInWeek)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        collectionController?.selectItem(for: initialDate, at: .centeredVertically)
     }
 }
 

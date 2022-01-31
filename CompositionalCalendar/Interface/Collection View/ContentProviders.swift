@@ -59,27 +59,17 @@ class SupplementaryContentProvider {
 extension UICollectionView.CellRegistration {
 
     static var defaultCell: UICollectionView.CellRegistration<UICollectionViewListCell, Day> {
-        return .init { cell, _, configuration in
-            var contentConfiguration = cell.defaultContentConfiguration()
-            contentConfiguration.text = configuration.date.formatted(.dateTime.day())
-            contentConfiguration.textProperties.alignment = .center
-            contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .title3)
-            contentConfiguration.directionalLayoutMargins = .zero
-            
-            if configuration.isInWeekend {
-                contentConfiguration.textProperties.color = .secondaryLabel
-            }
+        return .init { cell, _, day in
+            let contentConfiguration = UIListContentConfiguration.default(for: day, isSelected: cell.isSelected, in: cell)
             cell.contentConfiguration = contentConfiguration
             
             cell.configurationUpdateHandler = { cell, state in
-                var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+                guard let cell = cell as? UICollectionViewListCell else { return }
                 
-                if cell.isSelected {
-                    backgroundConfiguration.backgroundColor = .systemTeal
-                    backgroundConfiguration.backgroundInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
-                    backgroundConfiguration.cornerRadius = cell.bounds.width * 0.5
-                }
+                let contentConfiguration = UIListContentConfiguration.default(for: day, isSelected: state.isSelected, in: cell)
+                cell.contentConfiguration = contentConfiguration
                 
+                let backgroundConfiguration = UIBackgroundConfiguration.default(forSelected: state.isSelected, in: cell)
                 cell.backgroundConfiguration = backgroundConfiguration
             }
         }
@@ -101,5 +91,39 @@ extension UICollectionView.SupplementaryRegistration {
 
             supplementaryView.contentConfiguration = contentConfiguration
         }
+    }
+}
+
+// MARK: -
+extension UIListContentConfiguration {
+    
+    static func `default`(for day: Day, isSelected: Bool, in cell: UICollectionViewListCell) -> UIListContentConfiguration {
+        var contentConfiguration = cell.defaultContentConfiguration()
+        contentConfiguration.text = day.date.formatted(.dateTime.day())
+        contentConfiguration.textProperties.alignment = .center
+        contentConfiguration.textProperties.color = isSelected ? .systemBackground : .label
+        contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .title3)
+        contentConfiguration.directionalLayoutMargins = .zero
+        
+        if day.isInWeekend && !isSelected {
+            contentConfiguration.textProperties.color = .secondaryLabel
+        }
+        
+        return contentConfiguration
+    }
+}
+
+extension UIBackgroundConfiguration {
+    
+    static func `default`(forSelected selected: Bool, in cell: UICollectionViewCell) -> UIBackgroundConfiguration {
+        var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()
+        
+        if selected {
+            backgroundConfiguration.backgroundColor = .systemTeal
+            backgroundConfiguration.backgroundInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
+            backgroundConfiguration.cornerRadius = cell.bounds.width * 0.5
+        }
+        
+        return backgroundConfiguration
     }
 }

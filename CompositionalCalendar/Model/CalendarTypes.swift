@@ -7,21 +7,21 @@
 
 import Foundation
 
-struct Context {
+struct Year: Hashable {
     
-    let weekdaySymbols: [String]
-
-    init(calendar: Calendar) {
-        self.weekdaySymbols = calendar.veryShortWeekdaySymbols
-    }
-}
-
-struct Year {
-    
+    // MARK: - Properties
     let months: [Month]
+    let calendar: Calendar
     
-    init(months: [Month]) {
+    // MARK: - Initializers
+    init(months: [Month], calendar: Calendar) {
         self.months = months
+        self.calendar = calendar
+    }
+    
+    init?(date: Date, calendar: Calendar) {
+        let yearFromDate = calendar.component(.year, from: date)
+        self.init(year: yearFromDate, calendar: calendar)
     }
     
     init?(year: Int, calendar: Calendar) {
@@ -32,20 +32,32 @@ struct Year {
         self.init(months: monthsInYear.compactMap { monthIndex in
             guard let baseDate = calendar.date(bySetting: .month, value: monthIndex, of: baseDate) else { return nil }
             return Month(baseDate: baseDate, calendar: calendar)
-        })
+        }, calendar: calendar)
+    }
+    
+    // MARK: - Interface
+    func indexPath(for date: Date) -> IndexPath? {
+        guard let month = months.first(where: { calendar.isDate($0.firstDate, equalTo: date, toGranularity: .month) }),
+              let monthIndex = months.firstIndex(of: month), let dayIndex = month.index(for: date) else { return nil }
+        
+        return IndexPath(item: dayIndex, section: monthIndex)
     }
 }
 
-struct Month {
+struct Month: Hashable {
     
+    // MARK: - Properties
     let days: [Day]
     let firstDate: Date
     let firstDateWeekday: Int
+    let calendar: Calendar
     
-    init(days: [Day], firstDate: Date, firstDateWeekday: Int) {
+    // MARK: - Initializers
+    init(days: [Day], firstDate: Date, firstDateWeekday: Int, calendar: Calendar) {
         self.days = days
         self.firstDate = firstDate
         self.firstDateWeekday = firstDateWeekday
+        self.calendar = calendar
     }
     
     init?(baseDate: Date, calendar: Calendar) {
@@ -58,24 +70,28 @@ struct Month {
             return Day(date: date, index: day, isInWeekend: calendar.isDateInWeekend(date))
         }
         
-        self.init(days: days, firstDate: firstDayInMonth, firstDateWeekday: firstDayWeekday)
+        self.init(days: days, firstDate: firstDayInMonth, firstDateWeekday: firstDayWeekday, calendar: calendar)
     }
     
-    var dayItems: Int {
-        return days.count + (firstDateWeekday - 1)
+    // MARK: - Interface
+    var dayItems: Int { return days.count + (firstDateWeekday - 1) }
+    
+    func index(for date: Date) -> Int? {
+        guard let dayIndex = days.firstIndex(where: { calendar.isDate($0.date, equalTo: date, toGranularity: .day) }) else { return nil }
+        return dayIndex + (firstDateWeekday - 1)
     }
     
     func day(for index: Int) -> Day? {
         // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday, 5 = Thursday, 6 = Friday, 7 = Saturday
         let zeroIndexedFirstDateWeekday = firstDateWeekday - 1
         guard index - zeroIndexedFirstDateWeekday >= 0 else { return nil }
-        
         return days[index - zeroIndexedFirstDateWeekday]
     }
 }
 
 struct Day: Hashable {
     
+    // MARK: - Properties
     let date: Date
     let index: Int
     let isInWeekend: Bool
