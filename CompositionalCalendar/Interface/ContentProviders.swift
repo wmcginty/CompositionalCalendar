@@ -61,7 +61,7 @@ extension UICollectionView.CellRegistration {
     static var defaultCell: UICollectionView.CellRegistration<UICollectionViewListCell, Day> {
         return .init { cell, _, configuration in
             var contentConfiguration = cell.defaultContentConfiguration()
-            contentConfiguration.text = String(configuration.index)
+            contentConfiguration.text = configuration.date.formatted(.dateTime.day())
             contentConfiguration.textProperties.alignment = .center
             contentConfiguration.directionalLayoutMargins = .zero
             
