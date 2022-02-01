@@ -21,11 +21,11 @@ class CalendarViewController: UIViewController {
     private lazy var collectionController: CalendarCollectionController? = timeline.map {
         .init(timeline: $0, calendar: calendar, collectionView: collectionView)
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Calendar"
-
+        
         // Configure the weekday view
         weekdaysView.weekdaySymbols = calendar.veryShortWeekdaySymbols
         
@@ -43,7 +43,6 @@ class CalendarViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         collectionController?.scrollToItem(for: initialDate, at: .centeredVertically, animated: false)
-        //collectionController?.selectItem(for: initialDate, at: .centeredVertically)
     }
 }
 
@@ -57,7 +56,7 @@ private extension CalendarViewController {
             let item = NSCollectionLayoutItem(layoutSize: size)
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1),
                                                                              heightDimension: .estimated(100)),
-                                                                             subitem: item, count: daysInWeek)
+                                                           subitem: item, count: daysInWeek)
             
             let section = NSCollectionLayoutSection(group: group)
             section.boundarySupplementaryItems = [

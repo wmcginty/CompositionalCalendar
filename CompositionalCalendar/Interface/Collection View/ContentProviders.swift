@@ -9,25 +9,47 @@ import UIKit
 
 // MARK: - CellContentProvider
 class CellContentProvider {
+    
+    // MARK: - Subtypes
+    enum DayViewModel {
+        case day(Day)
+        case adjacentMonth // The cell is there to occupy space in the calendar, but not display content for this month
+        
+        // MARK: - Initializer
+        init(day: Day?) {
+            switch day {
+            case .some(let day): self = .day(day)
+            case .none: self = .adjacentMonth
+            }
+        }
+        
+        // MARK: - Interface
+        var formattedDate: String? {
+            switch self {
+            case .day(let day): return day.formattedDate
+            default: return  nil
+            }
+        }
+        
+        var isInWeekend: Bool {
+            switch self {
+            case .day(let day): return day.isInWeekend
+            default: return false
+            }
+        }
+    }
 
     // MARK: - Properties
-    let cell: UICollectionView.CellRegistration<UICollectionViewListCell, Day>
-    let emptyCell: UICollectionView.CellRegistration<UICollectionViewListCell, String>
+    let cell: UICollectionView.CellRegistration<UICollectionViewListCell, DayViewModel>
 
     // MARK: - Initializers
-    init(cell: UICollectionView.CellRegistration<UICollectionViewListCell, Day> = .defaultCell,
-         emptyCell: UICollectionView.CellRegistration<UICollectionViewListCell, String> = .emptyCell) {
+    init(cell: UICollectionView.CellRegistration<UICollectionViewListCell, DayViewModel> = .defaultCell) {
         self.cell = cell
-        self.emptyCell = emptyCell
     }
 
     // MARK: - Interface
-    func cell(in collectionView: UICollectionView, at indexPath: IndexPath, for content: Day?) -> UICollectionViewCell? {
-        if let day = content {
-            return collectionView.dequeueConfiguredReusableCell(using: cell, for: indexPath, item: day)
-        }
-        
-        return collectionView.dequeueConfiguredReusableCell(using: emptyCell, for: indexPath, item: "")
+    func cell(in collectionView: UICollectionView, at indexPath: IndexPath, for content: DayViewModel) -> UICollectionViewCell {
+        return collectionView.dequeueConfiguredReusableCell(using: cell, for: indexPath, item: content)
     }
 }
 
@@ -58,25 +80,24 @@ class SupplementaryContentProvider {
 // MARK: - Default Cell Registrations
 extension UICollectionView.CellRegistration {
 
-    static var defaultCell: UICollectionView.CellRegistration<UICollectionViewListCell, Day> {
-        return .init { cell, _, day in
-            let contentConfiguration = UIListContentConfiguration.default(for: day, isSelected: cell.isSelected, in: cell)
+    static var defaultCell: UICollectionView.CellRegistration<UICollectionViewListCell, CellContentProvider.DayViewModel> {
+        return .init { cell, _, viewModel in
+            
+            // The cell is not selected, configure the initial contents
+            let contentConfiguration = UIListContentConfiguration.default(for: viewModel, isSelected: cell.isSelected, in: cell)
             cell.contentConfiguration = contentConfiguration
             
             cell.configurationUpdateHandler = { cell, state in
+                //Re-configure the cell based on it's updated state
                 guard let cell = cell as? UICollectionViewListCell else { return }
                 
-                let contentConfiguration = UIListContentConfiguration.default(for: day, isSelected: state.isSelected, in: cell)
+                let contentConfiguration = UIListContentConfiguration.default(for: viewModel, isSelected: state.isSelected, in: cell)
                 cell.contentConfiguration = contentConfiguration
                 
                 let backgroundConfiguration = UIBackgroundConfiguration.default(forSelected: state.isSelected, in: cell)
                 cell.backgroundConfiguration = backgroundConfiguration
             }
         }
-    }
-    
-    static var emptyCell: UICollectionView.CellRegistration<UICollectionViewListCell, String> {
-        return .init { cell, _, configuration in }
     }
 }
 
@@ -95,17 +116,17 @@ extension UICollectionView.SupplementaryRegistration {
 }
 
 // MARK: - UIListContentConfiguration
-extension UIListContentConfiguration {
+fileprivate extension UIListContentConfiguration {
     
-    static func `default`(for day: Day, isSelected: Bool, in cell: UICollectionViewListCell) -> UIListContentConfiguration {
+    static func `default`(for viewModel: CellContentProvider.DayViewModel, isSelected: Bool, in cell: UICollectionViewListCell) -> UIListContentConfiguration {
         var contentConfiguration = cell.defaultContentConfiguration()
-        contentConfiguration.text = day.date.formatted(.dateTime.day())
+        contentConfiguration.text = viewModel.formattedDate
         contentConfiguration.textProperties.alignment = .center
         contentConfiguration.textProperties.color = isSelected ? .systemBackground : .label
         contentConfiguration.textProperties.font = .preferredFont(forTextStyle: .title3)
         contentConfiguration.directionalLayoutMargins = .zero
         
-        if day.isInWeekend && !isSelected {
+        if viewModel.isInWeekend && !isSelected {
             contentConfiguration.textProperties.color = .secondaryLabel
         }
         
@@ -114,7 +135,7 @@ extension UIListContentConfiguration {
 }
 
 // MARK: - UIBackgroundConfiguration
-extension UIBackgroundConfiguration {
+fileprivate extension UIBackgroundConfiguration {
     
     static func `default`(forSelected selected: Bool, in cell: UICollectionViewCell) -> UIBackgroundConfiguration {
         var backgroundConfiguration = UIBackgroundConfiguration.listPlainCell()

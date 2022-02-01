@@ -5,7 +5,6 @@
 //  Created by Will McGinty on 1/30/22.
 //
 
-import Foundation
 import UIKit
 
 class CalendarCollectionController: NSObject {
@@ -14,20 +13,21 @@ class CalendarCollectionController: NSObject {
     var timeline: Timeline
     let calendar: Calendar
     let collectionView: UICollectionView
+    
     private let contentProvider: CellContentProvider
     private var supplementaryProvider: SupplementaryContentProvider?
+    private var selectedIndexPath: IndexPath?
         
     // MARK: - Initializer
     init(timeline: Timeline, calendar: Calendar, collectionView: UICollectionView) {
         self.timeline = timeline
         self.calendar = calendar
         self.collectionView = collectionView
-        
         self.contentProvider = CellContentProvider()
         super.init()
         
         self.supplementaryProvider = SupplementaryContentProvider { [unowned self] in
-            return self.timeline.months[$0.section].firstDate.formatted(.dateTime.month(.wide).year())
+            self.timeline.months[$0.section].formattedFirstDate
         }
     }
     
@@ -39,7 +39,10 @@ class CalendarCollectionController: NSObject {
     }
     
     func selectItem(for date: Date, at scrollPosition: UICollectionView.ScrollPosition, animated: Bool = true) {
-        collectionView.selectItem(at: timeline.indexPath(for: date), animated: animated, scrollPosition: scrollPosition)
+        if let indexPath = timeline.indexPath(for: date) {
+            selectedIndexPath = indexPath
+            collectionView.selectItem(at: indexPath, animated: animated, scrollPosition: scrollPosition)
+        }
     }
 }
 
@@ -57,11 +60,17 @@ extension CalendarCollectionController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let month = timeline.months[indexPath.section]
-        return contentProvider.cell(in: collectionView, at: indexPath, for: month.day(for: indexPath.item))!
+        return contentProvider.cell(in: collectionView, at: indexPath,
+                                    for: CellContentProvider.DayViewModel(day: month.day(for: indexPath.item)))
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        return supplementaryProvider!.supplementaryView(in: collectionView, of: kind, at: indexPath)!
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let supplementaryView = supplementaryProvider?.supplementaryView(in: collectionView, of: kind, at: indexPath) else {
+            fatalError("Could not find supplementary view of kind \(kind) for indexPath: \(indexPath)")
+        }
+        
+        return supplementaryView
     }
 }
 
@@ -78,9 +87,9 @@ extension CalendarCollectionController: UICollectionViewDelegate {
         return month.day(for: indexPath.item) != nil
     }
     
-//    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-//        let attrs = collectionView.collectionViewLayout.layoutAttributesForSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath)
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
+    }
 }
 
 // MARK: - CalendarCollectionViewDelegate
@@ -88,202 +97,37 @@ extension CalendarCollectionController: CalendarCollectionViewDelegate {
     
     func calendarCollectionViewWillLayoutSubviews(_ collectionView: CalendarCollectionView) {
         if collectionView.contentOffset.y < 0 {
+            // If we've scrolled past the top - add more content before the current set
+            appendToTimeline(in: .backwards)
             
-            //add()
-            print(collectionView.contentOffset)
-//            collectionView.reloadData()
-//            collectionView.collectionViewLayout.invalidateLayout()
-//            collectionView.collectionViewLayout.prepare()
-            
-            add(forward: false)
-//            collectionView.setContentOffset(.zero, animated: false)
-            //collectionView.contentOffset = .init(x: 0, y: 10)
-            print(collectionView.contentOffset)
-        }
-        
-        
-        if collectionView.contentSize.height > 0, collectionView.contentOffset.y > collectionView.contentSize.height - collectionView.bounds.height {
-            //timeline.appendNextYear()
-            
-            add(forward: true)
-//            collectionView.reloadData()
-//            collectionView.collectionViewLayout.invalidateLayout()
-//            collectionView.collectionViewLayout.prepare()
+        } else if collectionView.contentSize.height > 0, collectionView.contentOffset.y > collectionView.contentSize.height - collectionView.bounds.height {
+            // If we've scrolled past the bottom - add more content after the current set
+            appendToTimeline(in: .forwards)
         }
     }
     
-    func add(forward: Bool) {
-        //collectionView.reloadData()
-        
+    func appendToTimeline(in direction: Timeline.Direction) {
         let visibleIndexPaths = collectionView.indexPathsForVisibleItems.sorted()
-        if visibleIndexPaths.isEmpty {
-             return
-        }
         
-        let fromIndexPath = visibleIndexPaths.first!
-        let fromSection = fromIndexPath.section
-        let fromSectionOfDate = timeline.months[fromSection].firstDate
-        let attrs = collectionView.collectionViewLayout.layoutAttributesForItem(at: .init(item: 0, section: fromSection))
-        let fromSectionOrigin = attrs!.frame.origin
+        guard let beforeIndexPath = visibleIndexPaths.first else { return }
+        let beforeSection = beforeIndexPath.section
+        let beforeSectionFirstDate = timeline.months[beforeSection].firstDate
         
-        if forward {
-            timeline.appendNextYear()
-        } else {
-            timeline.appendPreviousYear()
-        }
+        guard let beforeSectionLayoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: .init(item: 0, section: beforeSection)) else { return }
+        let beforeSectionOrigin = beforeSectionLayoutAttributes.frame.origin
         
+        // Update the data model, and reload the collection view
+        timeline.appendYear(in: direction)
+       
         collectionView.reloadData()
         collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.collectionViewLayout.prepare()
-        //restore selection
+        collectionView.selectItem(at: selectedIndexPath, animated: false, scrollPosition: [])
         
-        let toSection = timeline.months.firstIndex(where: { $0.firstDate == fromSectionOfDate })!
-        let toATtrs = collectionView.collectionViewLayout.layoutAttributesForItem(at: .init(item: 0, section: toSection))
-        let toOrigin = toATtrs!.frame.origin
-        
-        collectionView.contentOffset = .init(x: collectionView.contentOffset.x,
-                                              y: max(0, collectionView.contentOffset.y + (toOrigin.y - fromSectionOrigin.y)))
-        
-        
-        //NSInteger toSection = [self sectionForDate:fromSectionOfDate];
-        //    UICollectionViewLayoutAttributes *toAttrs = [cvLayout layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:toSection]];
-        //    CGPoint toSectionOrigin = [self convertPoint:toAttrs.frame.origin fromView:cv];
-        //
-        //    [cv setContentOffset:(CGPoint) {
-        //        cv.contentOffset.x,
-        //        cv.contentOffset.y + (toSectionOrigin.y - fromSectionOrigin.y)
-        //    }];
-        
+        if let afterSection = timeline.months.firstIndex(where: { $0.firstDate == beforeSectionFirstDate }),
+           let afterSectionLayoutAttributes = collectionView.collectionViewLayout.layoutAttributesForItem(at: .init(item: 0, section: afterSection)) {
+            let afterSectionOrigin = afterSectionLayoutAttributes.frame.origin
+            collectionView.contentOffset = .init(x: collectionView.contentOffset.x,
+                                                 y: collectionView.contentOffset.y + (afterSectionOrigin.y - beforeSectionOrigin.y))
+        }
     }
 }
-
-//
-//- (void)shiftDatesByComponents:(NSDateComponents *)components
-//{
-//    RSDFDatePickerCollectionView *cv = self.collectionView;
-//    RSDFDatePickerCollectionViewLayout *cvLayout = (RSDFDatePickerCollectionViewLayout *)self.collectionView.collectionViewLayout;
-//    
-//    NSArray *visibleCells = [cv visibleCells];
-//    if (![visibleCells count])
-//        return;
-//    
-//    NSIndexPath *fromIndexPath = [cv indexPathForCell:((UICollectionViewCell *)visibleCells[0])];
-//    NSInteger fromSection = fromIndexPath.section;
-//    NSDate *fromSectionOfDate = [self dateForFirstDayInSection:fromSection];
-//    UICollectionViewLayoutAttributes *fromAttrs = [cvLayout layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:fromSection]];
-//    CGPoint fromSectionOrigin = [self convertPoint:fromAttrs.frame.origin fromView:cv];
-//    
-//    if (!self.startDate) {
-//        _fromDate = [self dateWithFirstDayOfMonth:[self.calendar dateByAddingComponents:components toDate:self.fromDate options:0]];
-//    }
-//    
-//    if (!self.endDate) {
-//        _toDate = [self dateWithFirstDayOfMonth:[self.calendar dateByAddingComponents:components toDate:self.toDate options:0]];
-//    }
-//    
-//#if 0
-//    
-//    //    This solution trips up the collection view a bit
-//    //    because our reload is reactionary, and happens before a relayout
-//    //    since we must do it to avoid flickering and to heckle the CA transaction (?)
-//    //    that could be a small red flag too.
-//    
-//    [cv performBatchUpdates:^{
-//        
-//        if (components.month < 0) {
-//            
-//            [cv deleteSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-//                cv.numberOfSections - abs(components.month),
-//                abs(components.month)
-//            }]];
-//            
-//            [cv insertSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-//                0,
-//                abs(components.month)
-//            }]];
-//            
-//        } else {
-//            
-//            [cv insertSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-//                cv.numberOfSections,
-//                abs(components.month)
-//            }]];
-//            
-//            [cv deleteSections:[NSIndexSet indexSetWithIndexesInRange:(NSRange){
-//                0,
-//                abs(components.month)
-//            }]];
-//            
-//        }
-//        
-//    } completion:^(BOOL finished) {
-//        
-//        NSLog(@"%s %x", __PRETTY_FUNCTION__, finished);
-//        
-//    }];
-//    
-//    for (UIView *view in cv.subviews)
-//        [view.layer removeAllAnimations];
-//    
-//#else
-//    
-//    [cv reloadData];
-//    [cvLayout invalidateLayout];
-//    [cvLayout prepareLayout];
-//    
-//    [self restoreSelection];
-//    
-//#endif
-//    
-//    NSInteger toSection = [self sectionForDate:fromSectionOfDate];
-//    UICollectionViewLayoutAttributes *toAttrs = [cvLayout layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:toSection]];
-//    CGPoint toSectionOrigin = [self convertPoint:toAttrs.frame.origin fromView:cv];
-//    
-//    [cv setContentOffset:(CGPoint) {
-//        cv.contentOffset.x,
-//        cv.contentOffset.y + (toSectionOrigin.y - fromSectionOrigin.y)
-//    }];
-//}
-
-//- (void)restoreSelection
-//{
-//    if (self.selectedDate &&
-//        [self.selectedDate compare:self.fromDate] != NSOrderedAscending &&
-//        [self.selectedDate compare:self.toDate] == NSOrderedAscending) {
-//        NSIndexPath *indexPathForSelectedDate = [self indexPathForDate:self.selectedDate];
-//        [self.collectionView selectItemAtIndexPath:indexPathForSelectedDate animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-//        UICollectionViewCell *selectedCell = [self.collectionView cellForItemAtIndexPath:indexPathForSelectedDate];
-//        if (selectedCell) {
-//            [selectedCell setNeedsDisplay];
-//        }
-//    }
-//}
-//
-//- (void)selectDate:(NSDate *)date
-//{
-//    if (![self.selectedDate isEqual:date]) {
-//        if (self.selectedDate &&
-//            [self.selectedDate compare:self.fromDate] != NSOrderedAscending &&
-//            [self.selectedDate compare:self.toDate] == NSOrderedAscending) {
-//            NSIndexPath *previousSelectedCellIndexPath = [self indexPathForDate:self.selectedDate];
-//            [self.collectionView deselectItemAtIndexPath:previousSelectedCellIndexPath animated:NO];
-//            UICollectionViewCell *previousSelectedCell = [self.collectionView cellForItemAtIndexPath:previousSelectedCellIndexPath];
-//            if (previousSelectedCell) {
-//                [previousSelectedCell setNeedsDisplay];
-//            }
-//        }
-//
-//        _selectedDate = date;
-//
-//        if (self.selectedDate &&
-//            [self.selectedDate compare:self.fromDate] != NSOrderedAscending &&
-//            [self.selectedDate compare:self.toDate] == NSOrderedAscending) {
-//            NSIndexPath *indexPathForSelectedDate = [self indexPathForDate:self.selectedDate];
-//            [self.collectionView selectItemAtIndexPath:indexPathForSelectedDate animated:NO scrollPosition:UICollectionViewScrollPositionNone];
-//            UICollectionViewCell *selectedCell = [self.collectionView cellForItemAtIndexPath:indexPathForSelectedDate];
-//            if (selectedCell) {
-//                [selectedCell setNeedsDisplay];
-//            }
-//        }
-//    }
-//}
