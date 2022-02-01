@@ -14,7 +14,7 @@ Each of these `Year`s has (predictably) an `[Month]`, calculated by iterating ov
 
 ### Infinite Scrolling
 
-[Demo of infinite scrolling collection view](./docs/Images/CompositionalCalendar.gif)
+![Demo of infinite scrolling collection view](./docs/Images/CompositionalCalendar.gif)
 (the frame rate is much smoother on device / simulator)
 
 
