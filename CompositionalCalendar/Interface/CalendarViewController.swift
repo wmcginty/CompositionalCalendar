@@ -11,19 +11,20 @@ class CalendarViewController: UIViewController {
     
     // MARK: - Outlets
     @IBOutlet private var weekdaysView: WeekdaysView!
-    @IBOutlet private var collectionView: UICollectionView!
+    @IBOutlet private var collectionView: CalendarCollectionView!
     
     // MARK: - Properties
     let initialDate = Date()
     let calendar = Calendar.current
     
-    private lazy var year = Year(date: initialDate, calendar: calendar)
-    private lazy var collectionController: CalendarCollectionController? = year.map {
-        .init(year: $0, calendar: calendar, collectionView: collectionView)
+    private lazy var timeline = Timeline(initialDate: initialDate, calendar: calendar)
+    private lazy var collectionController: CalendarCollectionController? = timeline.map {
+        .init(timeline: $0, calendar: calendar, collectionView: collectionView)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Calendar"
 
         // Configure the weekday view
         weekdaysView.weekdaySymbols = calendar.veryShortWeekdaySymbols
@@ -32,6 +33,7 @@ class CalendarViewController: UIViewController {
         view.insertSubview(collectionView, belowSubview: weekdaysView)
         collectionView.dataSource = collectionController
         collectionView.delegate = collectionController
+        collectionView.calendarScrollDelegate = collectionController
         
         if let daysInWeek = calendar.range(of: .weekday, in: .weekOfYear, for: initialDate)?.count {
             collectionView.collectionViewLayout = makeLayout(forDaysInWeek: daysInWeek)
@@ -40,7 +42,8 @@ class CalendarViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        collectionController?.selectItem(for: initialDate, at: .centeredVertically)
+        collectionController?.scrollToItem(for: initialDate, at: .centeredVertically, animated: false)
+        //collectionController?.selectItem(for: initialDate, at: .centeredVertically)
     }
 }
 

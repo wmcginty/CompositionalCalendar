@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B441657127A8B8A800EEF639 /* CalendarCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B441657027A8B8A800EEF639 /* CalendarCollectionView.swift */; };
 		B4DD807527A7362F00AF6268 /* WeekdaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DD807427A7362F00AF6268 /* WeekdaysView.swift */; };
 		B4F53B4527A701B7009099FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4427A701B7009099FC /* AppDelegate.swift */; };
 		B4F53B4727A701B7009099FC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4F53B4627A701B7009099FC /* SceneDelegate.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B441657027A8B8A800EEF639 /* CalendarCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCollectionView.swift; sourceTree = "<group>"; };
 		B4DD807427A7362F00AF6268 /* WeekdaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdaysView.swift; sourceTree = "<group>"; };
 		B4F53B4127A701B7009099FC /* CompositionalCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CompositionalCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4F53B4427A701B7009099FC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				B4DD807427A7362F00AF6268 /* WeekdaysView.swift */,
+				B441657027A8B8A800EEF639 /* CalendarCollectionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -182,6 +185,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B441657127A8B8A800EEF639 /* CalendarCollectionView.swift in Sources */,
 				B4F53B5D27A71D16009099FC /* CalendarCollectionController.swift in Sources */,
 				B4DD807527A7362F00AF6268 /* WeekdaysView.swift in Sources */,
 				B4F53B5927A705A6009099FC /* CalendarTypes.swift in Sources */,

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20034" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20034" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="RNK-kP-0Mz">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20017"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -10,16 +11,16 @@
         <!--Calendar View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CalendarViewController" customModule="CustomCalendar" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="CalendarViewController" customModule="CompositionalCalendar" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fco-xI-On6">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="108"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="196"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="kpl-Kj-bEh" customClass="WeekdaysView" customModule="CustomCalendar" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="20" width="600" height="80"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="kpl-Kj-bEh" customClass="WeekdaysView" customModule="CompositionalCalendar" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="108" width="414" height="80"/>
                                         <color key="backgroundColor" systemColor="systemTealColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="80" placeholder="YES" id="qOj-N0-V0a"/>
@@ -33,8 +34,8 @@
                                     <constraint firstAttribute="bottom" secondItem="kpl-Kj-bEh" secondAttribute="bottom" constant="8" id="qjP-Q9-xLh"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WSc-Hu-Xdt">
-                                <rect key="frame" x="0.0" y="108" width="600" height="458"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WSc-Hu-Xdt" customClass="CalendarCollectionView" customModule="CompositionalCalendar" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="196" width="414" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="jxQ-SZ-4cQ">
                                     <size key="itemSize" width="128" height="128"/>
@@ -58,6 +59,7 @@
                             <constraint firstAttribute="bottom" secondItem="WSc-Hu-Xdt" secondAttribute="bottom" constant="34" id="vf0-2k-Su9"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="dJF-JH-Wgi"/>
                     <connections>
                         <outlet property="collectionView" destination="WSc-Hu-Xdt" id="Sxv-fh-mRH"/>
                         <outlet property="weekdaysView" destination="kpl-Kj-bEh" id="HUy-zO-Q3h"/>
@@ -65,7 +67,29 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="114" y="94"/>
+            <point key="canvasLocation" x="868" y="94"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="zrw-wG-Qgg">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="RNK-kP-0Mz" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="WAN-rG-wPR">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" systemColor="systemTealColor"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="YbK-au-Iml"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5uv-MM-DgQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-207" y="94"/>
         </scene>
     </scenes>
     <resources>
