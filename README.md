@@ -14,9 +14,9 @@ Each of these `Year`s has (predictably) an `[Month]`, calculated by iterating ov
 
 ### Infinite Scrolling
 
-![Demo of infinite scrolling collection view](./docs/Images/CompositionalCalendar.gif)
-(the frame rate is much smoother on device / simulator)
-
+| <img src="./docs/Images/CompositionalCalendar.gif" width="250" height="540"/> | 
+|:--:| 
+| *Infinite scrolling in action. Note: the frame rate is smoother and the image is sharper on an actual simulator / device* |
 
 In order to infinitely scroll in either direction around a given date - the contents of the data source has to change. You can't just store a ridiculously large amount of dates in an array and hope for the best.
 
